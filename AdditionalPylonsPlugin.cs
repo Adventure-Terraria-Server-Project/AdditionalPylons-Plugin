@@ -42,16 +42,24 @@ namespace AdditionalPylons
       if (e.Width != 3 || e.Length != 4)
         return;
 
+      long savePosition = e.Data.Position;
       NetTile[,] tiles = new NetTile[e.Width, e.Length];
+
       for (int x = 0; x < e.Width; x++)
       {
         for (int y = 0; y < e.Length; y++)
         {
-           tiles[x, y] = new NetTile(e.Data);
-           if (tiles[x,y].Type != Terraria.ID.TileID.TeleportationPylon)
-             return;
+          tiles[x, y] = new NetTile(e.Data);
+          if (tiles[x, y].Type != Terraria.ID.TileID.TeleportationPylon)
+          {
+            e.Data.Seek(savePosition, System.IO.SeekOrigin.Begin);
+            return;
+          }
         }
       }
+
+      // Reset back the data
+      e.Data.Seek(savePosition, System.IO.SeekOrigin.Begin);
 
       // Simply clear the Main system's pylon network to fool server >:DD
       // This works simply because the pylon system is refreshed anyways when it gets placed.
@@ -116,14 +124,16 @@ namespace AdditionalPylons
 
       Terraria.GameContent.Tile_Entities.TETeleportationPylon.Place(e.X, e.Y);
 
-      SendPlayerPylonSystem(e.Player.Index, true);
-      //Main.PylonSystem.Reset(); // Don't need to reset server
+      // This is required to update the Server on the pylon list.
+      // NOTE: Reset will broadcast changes to all players.
+      Main.PylonSystem.Reset();
 
       // Send STR after manually doing TETeleportationPylon.Place() since other clients don't know about this pylon
       TShockAPI.TSPlayer.All.SendTileRect((short)e.X, (short)e.Y, 3, 4);
+
       playersHoldingPylon.Remove(e.Player.Index);
 
-      e.Handled = true;
+      //e.Handled = true;
     }
     #endregion // Plugin Hooks
 
