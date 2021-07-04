@@ -2,7 +2,7 @@
 Allow placing additional (infinite) pylons more than the default Terraria limits of 1 pylon per type.
 
 ### Download link
-catbox link: https://files.catbox.moe/2gsl9n.dll
+catbox link: https://files.catbox.moe/hx1lqm.dll
 
 ### How to Install
 
