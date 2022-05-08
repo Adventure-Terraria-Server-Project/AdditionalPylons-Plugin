@@ -73,9 +73,6 @@ namespace AdditionalPylons
       if (this.isDisposed || e.Handled)
         return;
 
-      if (!e.Player.IsLoggedIn)
-        return;
-
       if (!e.Player.HasPermission(permission_infiniteplace))
         return;
 
